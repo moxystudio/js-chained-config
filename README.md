@@ -102,7 +102,7 @@ A ChainedMap operates similarly to a JavaScript Map, with some conveniences for 
 <details>
   <summary><b>Diferences from webpack-chain:</b></summary>
   <ul>
-    <li>Removed <code>move()</code> because it's an internal method, reducing the number of conflicts in case you create a class that inherits from <code>ChainedMap</code></li>
+    <li>Removed <code>order()</code> because it's an internal method, reducing the number of conflicts in case you create a class that inherits from <code>ChainedMap</code></li>
     <li>Removed <code>.clean(obj)</code> because it's more of a helper (it didn't use <code>this.store</code> whatsoever)</li>
     <li>Added <code>.tap(key, fn)</code></li>
     <li>Added <code>.keys()</code> just like the native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/keys">Map</a></li>
