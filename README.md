@@ -1,34 +1,34 @@
-# base-chain
+# chained-config
 
 [![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status][codecov-image]][codecov-url] [![Dependency status][david-dm-image]][david-dm-url] [![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url] [![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
 
-[npm-url]:https://npmjs.org/package/base-chain
-[downloads-image]:http://img.shields.io/npm/dm/base-chain.svg
-[npm-image]:http://img.shields.io/npm/v/base-chain.svg
-[travis-url]:https://travis-ci.org/moxystudio/js-base-chain
-[travis-image]:http://img.shields.io/travis/moxystudio/js-base-chain/master.svg
-[codecov-url]:https://codecov.io/gh/moxystudio/js-base-chain
-[codecov-image]:https://img.shields.io/codecov/c/github/moxystudio/js-base-chain/master.svg
-[david-dm-url]:https://david-dm.org/moxystudio/js-base-chain
-[david-dm-image]:https://img.shields.io/david/moxystudio/js-base-chain.svg
-[david-dm-dev-url]:https://david-dm.org/moxystudio/js-base-chain?type=dev
-[david-dm-dev-image]:https://img.shields.io/david/dev/moxystudio/js-base-chain.svg
-[greenkeeper-image]:https://badges.greenkeeper.io/moxystudio/js-base-chain.svg
+[npm-url]:https://npmjs.org/package/chained-config
+[downloads-image]:http://img.shields.io/npm/dm/chained-config.svg
+[npm-image]:http://img.shields.io/npm/v/chained-config.svg
+[travis-url]:https://travis-ci.org/moxystudio/js-chained-config
+[travis-image]:http://img.shields.io/travis/moxystudio/js-chained-config/master.svg
+[codecov-url]:https://codecov.io/gh/moxystudio/js-chained-config
+[codecov-image]:https://img.shields.io/codecov/c/github/moxystudio/js-chained-config/master.svg
+[david-dm-url]:https://david-dm.org/moxystudio/js-chained-config
+[david-dm-image]:https://img.shields.io/david/moxystudio/js-chained-config.svg
+[david-dm-dev-url]:https://david-dm.org/moxystudio/js-chained-config?type=dev
+[david-dm-dev-image]:https://img.shields.io/david/dev/moxystudio/js-chained-config.svg
+[greenkeeper-image]:https://badges.greenkeeper.io/moxystudio/js-chained-config.svg
 [greenkeeper-url]:https://greenkeeper.io/
 
-Use a chaining API to generate and simplify the modification of data structures.
+Use a chaining API to generate and simplify the modification of configs.
 
 
 ## Installation
 
-`$ npm install base-chain`
+`$ npm install chained-config`
 
 
 ## Motivation
 
 With `webpack-chain`, manipulating the webpack config is a breeze. This is possible thanks to [ChainedMap](https://github.com/mozilla-neutrino/webpack-chain/blob/2445476d0d7f444c34060f383c890597ca0d2e8d/src/ChainedMap.js) and [ChainedSet](https://github.com/mozilla-neutrino/webpack-chain/blob/2445476d0d7f444c34060f383c890597ca0d2e8d/src/ChainedSet.js).
 
-`base-chain` offers those constructors in a separate package so that we can apply the same concepts to other data structures other than Webpack configuration. There are small differences that are noted in each API section.
+`chained-config` offers those constructors in a separate package so that we can apply the same concepts to other configurations other than Webpack. There are small differences that are noted in each API section.
 
 
 ## Usage
@@ -38,7 +38,7 @@ const {
     ChainedMap,
     OrderableChainedMap,
     ChainedSet,
-} = require('base-chain');
+} = require('chained-config');
 ```
 
 Either you may use these directly or extend them, just like [DevServer](https://github.com/mozilla-neutrino/webpack-chain/blob/2445476d0d7f444c34060f383c890597ca0d2e8d/src/DevServer.js) from `webpack-chain` extends `ChainedMap`.
@@ -48,11 +48,11 @@ const chainedMap = new ChainedMap();
 
 // ..or
 
-class MyDataStructure extends ChainedMap {
+class MyConfig extends ChainedMap {
     // your own methods here..
 }
 
-const myDataStructure = new MyDataStructure();
+const myConfig = new MyConfig();
 ```
 
 
@@ -97,7 +97,7 @@ Returns itself to allow chaining.
 
 ### ChainedMap
 
-A ChainedMap operates similarly to a JavaScript Map, with some conveniences for chaining and generating data structures. It extends [Chainable](#chainable) which means that all its methods are also available.
+A ChainedMap operates similarly to a JavaScript Map, with some conveniences for chaining and generating configs. It extends [Chainable](#chainable) which means that all its methods are also available.
 
 <details>
   <summary><b>Diferences from webpack-chain:</b></summary>
@@ -305,7 +305,7 @@ jestConfig
 
 ### ChainedSet
 
-A ChainedSet operates similarly to a JavaScript Set, with some conveniences for chaining and generating data structures. It extends [Chainable](#chainable) which means that all its methods are also available.
+A ChainedSet operates similarly to a JavaScript Set, with some conveniences for chaining and generating configs. It extends [Chainable](#chainable) which means that all its methods are also available.
 
 <details>
   <summary><b>Differences from webpack-chain:</b></summary>

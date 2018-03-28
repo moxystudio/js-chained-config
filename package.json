@@ -1,19 +1,19 @@
 {
-  "name": "base-chain",
+  "name": "chained-config",
   "version": "0.0.0",
-  "description": "Use a chaining API to generate and simplify the modification of data structures",
+  "description": "Use a chaining API to generate and simplify the modification of configs",
   "keywords": [
     "chain",
     "chainable",
     "webpack-chain",
     "config",
-    "data-structure"
+    "configuration"
   ],
   "author": "André Cruz <andre@moxy.studio>",
-  "homepage": "https://github.com/moxystudio/js-base-chain",
+  "homepage": "https://github.com/moxystudio/js-chained-config",
   "repository": {
     "type": "git",
-    "url": "git@github.com:moxystudio/js-base-chain.git"
+    "url": "git@github.com:moxystudio/js-chained-config.git"
   },
   "license": "MIT",
   "main": "index.js",
