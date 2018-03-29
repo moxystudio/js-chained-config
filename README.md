@@ -100,7 +100,7 @@ Returns itself to allow chaining.
 A ChainedMap operates similarly to a JavaScript Map, with some conveniences for chaining and generating configs. It extends [Chainable](#chainable) which means that all its methods are also available.
 
 <details>
-  <summary><b>Diferences from webpack-chain:</b></summary>
+  <summary><b>Differences from webpack-chain:</b></summary>
   <ul>
     <li>Removed <code>order()</code> because it's an internal method, reducing the number of conflicts in case you create a class that inherits from <code>ChainedMap</code></li>
     <li>Removed <code>.clean(obj)</code> because it's more of a helper (it didn't use <code>this.store</code> whatsoever)</li>
@@ -219,9 +219,9 @@ OrderableChainedMap extends [Chainable](#chained-map) and allows to re-order key
 Consequently, `keys()`, `values()`, `entries()` and `.forEach()` methods of OrderableChainedMap will have into consideration any changes to the entries order.
 
 <details>
-  <summary><b>Diferences from webpack-chain:</b></summary>
+  <summary><b>Differences from webpack-chain:</b></summary>
   <ul>
-    <li><code>webpack-chain</code> has Orderable which is a function that receives a Chainable and adds the `before` and `after` methods. OrderableChainedMap is more flexible since it allows ordering entries whose values are primitives</li>
+    <li><code>webpack-chain</code> has Orderable which is a function that receives a Chainable and adds the <code>before</code> and <code>after</code> methods. OrderableChainedMap is more flexible since it allows ordering entries whose values are primitives</li>
     <li>Removed weird treatment on <code>.merge(obj, [omit])</code> of <code>after</code> and <code>before</code> keys in <code>obj</code></li>
     <li>Fixed minor bugs that caused <code>.keys()</code>, <code>.values()</code> and <code>.entries()</code> to not respect the order specified with <code>.before(key)</code> and <code>.after(key)</code>
   </ul>
