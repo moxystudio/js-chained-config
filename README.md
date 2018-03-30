@@ -125,7 +125,7 @@ A ChainedMap operates similarly to a JavaScript Map, with some conveniences for 
 </details>
 
 
-### constructor(parent, [options])
+#### constructor(parent, [options])
 
 At the moment, ChainedMap accepts a single option named `asArray`.
 
@@ -274,7 +274,7 @@ const jestConfig = (new Jest())
         .tap('global', (thresholds) => Object.assign(thresholds, { branches: 100 }))
         .end()
     .coveragePathIgnorePatterns
-        .set('node_modules', '/node_modules/') 
+        .set('node_modules', '/node_modules/')
         .end()
     .toConfig();
 
