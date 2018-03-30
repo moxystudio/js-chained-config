@@ -29,7 +29,7 @@ describe('.set', () => {
 });
 
 describe('.delete', () => {
-    it('should delete the entry from the order store', () => {
+    it('should delete the item from the order store', () => {
         const map = new OrderableChainedMap();
 
         map.move('foo', ({ before }) => before('bar'));
@@ -89,7 +89,7 @@ describe('.order', () => {
 });
 
 describe('.values', () => {
-    it('should return the entry values by insertion order', () => {
+    it('should be sorted by the correct order', () => {
         const map = new OrderableChainedMap();
 
         map.set('prop1', 1);
@@ -117,7 +117,7 @@ describe('.values', () => {
 });
 
 describe('.keys', () => {
-    it('should return the entry keys by the correct order', () => {
+    it('should be sorted by the correct order', () => {
         const map = new OrderableChainedMap();
 
         map.set('prop1', 1);
@@ -145,7 +145,7 @@ describe('.keys', () => {
 });
 
 describe('.entries', () => {
-    it('should return an object with keys and values by the correct order', () => {
+    it('should be sorted by the correct order', () => {
         const map = new OrderableChainedMap();
 
         map.set('prop1', 1);
@@ -155,9 +155,11 @@ describe('.entries', () => {
         map.move('prop1', ({ after }) => after('prop3'));
         map.move('prop2', ({ before }) => before('prop1'));
 
-        const entries = map.entries();
-
-        expect(Object.keys(entries)).toEqual(['prop3', 'prop2', 'prop1']);
+        expect(map.entries()).toEqual([
+            ['prop3', 3],
+            ['prop2', 2],
+            ['prop1', 1],
+        ]);
     });
 
     it('should deal with relative keys that does not exist', () => {
@@ -170,14 +172,16 @@ describe('.entries', () => {
         map.move('prop1', ({ after }) => after('prop4'));
         map.move('prop2', ({ before }) => before('prop5'));
 
-        const entries = map.entries();
-
-        expect(Object.keys(entries)).toEqual(['prop1', 'prop2', 'prop3']);
+        expect(map.entries()).toEqual([
+            ['prop1', 1],
+            ['prop2', 2],
+            ['prop3', 3],
+        ]);
     });
 });
 
 describe('.forEach', () => {
-    it('should call fn for each entry by the correct order', () => {
+    it('should call `fn` by the correct order', () => {
         const map = new OrderableChainedMap();
 
         map.set('prop1', 1);
@@ -219,5 +223,46 @@ describe('.forEach', () => {
             [2, 'prop2', map],
             [3, 'prop3', map],
         ]);
+    });
+});
+
+describe('.toConfig', () => {
+    it('should be sorted by the correct order', () => {
+        const map = new OrderableChainedMap();
+
+        map.set('prop1', 1);
+        map.set('prop2', 2);
+        map.set('prop3', 3);
+
+        map.move('prop1', ({ after }) => after('prop3'));
+        map.move('prop2', ({ before }) => before('prop1'));
+
+        expect(Object.keys(map.toConfig())).toEqual(['prop3', 'prop2', 'prop1']);
+    });
+
+    it('should return an array sorted by the correct order if `options.asArray` is enabled', () => {
+        const map = new OrderableChainedMap(undefined, { asArray: true });
+
+        map.set('prop1', 1);
+        map.set('prop2', 2);
+        map.set('prop3', 3);
+
+        map.move('prop1', ({ after }) => after('prop3'));
+        map.move('prop2', ({ before }) => before('prop1'));
+
+        expect(map.toConfig()).toEqual([3, 2, 1]);
+    });
+
+    it('should deal with relative keys that does not exist', () => {
+        const map = new OrderableChainedMap();
+
+        map.set('prop1', 1);
+        map.set('prop2', 2);
+        map.set('prop3', 3);
+
+        map.move('prop1', ({ after }) => after('prop4'));
+        map.move('prop2', ({ before }) => before('prop5'));
+
+        expect(Object.keys(map.toConfig())).toEqual(['prop1', 'prop2', 'prop3']);
     });
 });

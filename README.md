@@ -66,6 +66,7 @@ This is the base class that others inherit from, it's not meant to be used direc
   <summary><b>Differences from webpack-chain:</b></summary>
   <ul>
     <li>Moved <code>.when(condition, whenTruthy, whenFalsy)</code> from ChainedMap and ChainedSet to Chainable to avoid having them replicated</li>
+    <li>Added <code>#isChainable</code> static method to test if a value is an instance of Chainable</li>
   </ul>
 </details>
 
@@ -94,6 +95,12 @@ Conditionally execute a function on the current chain.
 
 Returns itself to allow chaining.
 
+#### #isChainable(value)
+
+Test if `value` is an instance of Chainable.
+
+Returns true if it is, false otherwise.
+
 
 ### ChainedMap
 
@@ -103,61 +110,89 @@ A ChainedMap operates similarly to a JavaScript Map, with some conveniences for 
   <summary><b>Differences from webpack-chain:</b></summary>
   <ul>
     <li>Removed <code>order()</code> because it's an internal method, reducing the number of conflicts in case you create a class that inherits from <code>ChainedMap</code></li>
-    <li>Removed <code>.clean(obj)</code> because it's more of a helper (it didn't use <code>this.store</code> whatsoever)</li>
+    <li>Removed <code>.clean(obj)</code> because it was used as a helper (it didn't use <code>this.store</code> whatsoever)</li>
+    <li>Renamed <code>.extend(shorthands)</code> to <code>.shorthands(keys)</code></li>
+    <li>Changed <code>.entries(obj)</code> to return an array of key and value pairs just like the native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/keys">Map</a>
+    <li>Added <code>.tap(key, fn)</code></li>
+    <li>Changed <code>.set(key, value)</code> to automatically create a getter & setter if <code>value</code> is a Chainable</li>
     <li>Added <code>.tap(key, fn)</code></li>
     <li>Added <code>.keys()</code> just like the native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/keys">Map</a></li>
     <li>Added <code>.forEach()</code> just like the native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach">Map</a></li>
-    <li>Changed <code>.entries()</code> to no longer return <code>undefined</code> if the map is empty in order to avoid any "gotchas"</li>
+    <li>Added <code>.toConfig()</code> which returns an object representation of the config, calling <code>.toConfig()</code> recursively for each stored value</li>
   </ul>
+
+  Some of the changes detailed above are *breaking* but they will mostly affect developers implementing the configs and not the consumers.
 </details>
 
 
+### constructor(parent, [options])
+
+At the moment, ChainedMap accepts a single option named `asArray`.
+
+A Set is very limited in its capacities. With `asArray`, we can leverage ChainedMap features while keeping the return type of `toConfig` as an array. In this model, the keys on the backing map act as labels that identify items, becoming easier for consumers to manipulate items. Moreover, when using OrderableChainedMap, consumers may even change the items' order.
+
 #### .get(key)
 
-Retrieve the value of the entry corresponding to `key`.
+Retrieve the value of the item corresponding to `key`.
 
 #### .set(key, value)
 
-Set the value of the entry corresponding to `key`.
+Set the value of the item corresponding to `key`.
+
+If `value` is a `Chainable`, a getter/setter will automatically be created with the name `key`:
+
+```js
+class MyConfig extends ChainedMap {
+    constructor(parent) {
+        super(parent);
+
+        this.set('foo', new ChainedMap(this));
+    });
+}
+
+const myConfig = new MyConfig();
+
+// myConfig.foo is a `ChainedMap` instance
+```
 
 Returns itself to allow chaining.
 
 #### .tap(key, fn)
 
-Execute `fn` with the current value of the entry corresponding to `key`.   
+Execute `fn` with the current value of the item corresponding to `key`.   
 The return value of `fn` will replace the current value.
 
 Returns itself to allow chaining.
 
 #### .delete(key)
 
-Remove the entry corresponding to `key`.
+Remove the item corresponding to `key`.
 
 Returns itself to allow chaining.
 
 #### .has(key)
 
-Check if there's an entry corresponding to `key`.
+Check if there's an item corresponding to `key`.
 
 Returns `true` if it exists, `false` otherwise.
 
 #### .clear()
 
-Remove all entries from the Map.
+Remove all items from the Map.
 
 Returns itself to allow chaining.
 
 #### .keys()
 
-Returns an array of the keys stored in the Map.
+Return an array of the keys stored in the Map.
 
 #### .values()
 
-Returns an array of the values stored in the Map.
+Return an array of the values stored in the Map.
 
 #### .entries()
 
-Returns an object of all the entries stored in the Map.
+Return an array of all the `[key, value]` pairs for each element stored in the Map.
 
 #### .forEach(fn, [thisArg])
 
@@ -170,34 +205,65 @@ You can also provide an array as the second argument for property names to omit 
 
 Returns itself to allow chaining.
 
-#### .extend(shorthands)
+#### .shorthands(keys)
 
-Add setter aliases for each `key` specified in `shorthands`.
+Add shorthands for every key specified in `keys` array.
+
+Essentially, this method is a sugar for:
+
+```js
+class MyConfig extends ChainedMap {
+    foo(value) {
+        return this.set('foo', value);
+    }
+
+    bar(value) {
+        return this.set('bar', value);
+    }
+};
+```
+
+which can be written as:
+
+```js
+class MyConfig extends ChainedMap {
+    constructor(parent) {
+        super(parent);
+
+        this.shorthands(['foo', 'bar']);
+    }
+};
+```
 
 Returns itself to allow chaining.
 
+#### .toConfig()
 
-#### Example
+Return the plain object representation of the config.   
+Calls `.toConfig()` recursively for each item that is a chainable.
+
+
+#### Example usage of ChainedMap
 
 ```js
 class Jest extends ChainedMap {
     constructor(parent) {
         super(parent);
 
-        this.extend([
+        this.shorthands([
             'rootDir',
             'runner',
-            // ...
         ]);
 
-        this.coverageThresholds = new ChainedMap(this);
+        this.set('coverageThresholds', new ChainedMap(this));
+        this.set('coveragePathIgnorePatterns', new ChainedMap(this, { asArray: true }));
     }
 }
 
 // Then use it like so:
-const jestConfig = new Jest();
-
-jestConfig
+const jestConfig = (new Jest())
+    .rootDir('my-project')
+    .runner('jest-runner-mocha')
     .coverageThresholds
         .set('global', {
             branches: 80,
@@ -207,21 +273,37 @@ jestConfig
         })
         .tap('global', (thresholds) => Object.assign(thresholds, { branches: 100 }))
         .end()
-    .rootDir('my-project')
-    .runner('jest-runner-mocha');
+    .coveragePathIgnorePatterns
+        .set('node_modules', '/node_modules/') 
+        .end()
+    .toConfig();
+
+// {
+//     rootDir: 'my-project',
+//     runner: 'jest-runner-mocha',
+//     coverageThresholds: {
+//         global: {
+//             branches: 100,
+//             functions: 80,
+//             lines: 80,
+//             statements: -10,
+//         },
+//     },
+//     coveragePathIgnorePatterns: ['/node_modules/'],
+// }
 ```
 
 
 ### OrderableChainedMap
 
-OrderableChainedMap extends [Chainable](#chained-map) and allows to re-order keys via the `move(key, specifier)` method. It also adds `before(key)` and `after(key)` methods on Chainables added via `set`. This allows an entry to declare that it comes before or after another by calling the aforementioned methods on itself.
+OrderableChainedMap extends [Chainable](#chained-map) and allows to re-order keys via the `move(key, specifier)` method. It also adds `before(key)` and `after(key)` methods on Chainables added via `set`. This allows an item to declare that it comes before or after another by calling the aforementioned methods on itself.
 
-Consequently, `keys()`, `values()`, `entries()` and `.forEach()` methods of OrderableChainedMap will have into consideration any changes to the entries order.
+Consequently, `keys()`, `values()`, `entries()`, `.forEach()`, `toObject()` and `toConfig()` methods of OrderableChainedMap will have into consideration any changes to the items order.
 
 <details>
   <summary><b>Differences from webpack-chain:</b></summary>
   <ul>
-    <li><code>webpack-chain</code> has Orderable which is a function that receives a Chainable and adds the <code>before</code> and <code>after</code> methods. OrderableChainedMap is more flexible since it allows ordering entries whose values are primitives</li>
+    <li><code>webpack-chain</code> has Orderable which is a function that receives a Chainable and adds the <code>before</code> and <code>after</code> methods. OrderableChainedMap is more flexible since it allows ordering items whose values are primitives</li>
     <li>Removed weird treatment on <code>.merge(obj, [omit])</code> of <code>after</code> and <code>before</code> keys in <code>obj</code></li>
     <li>Fixed minor bugs that caused <code>.keys()</code>, <code>.values()</code> and <code>.entries()</code> to not respect the order specified with <code>.before(key)</code> and <code>.after(key)</code>
   </ul>
@@ -230,7 +312,7 @@ Consequently, `keys()`, `values()`, `entries()` and `.forEach()` methods of Orde
 
 #### .move(key, specifier)
 
-Moves the entry corresponding to `key` before of after another, according to the `specifier`.
+Moves the item corresponding to `key` before of after another, according to the `specifier`.
 
 `specifier` is a function that will be called with a single argument which is an object with `before(relativeKey)` and `after(relativeKey)` functions.
 
@@ -241,32 +323,31 @@ Returns itself to allow chaining.
 
 ##### .before(key)
 
-Marks the entry to be positioned before `key` on the OrderableChainedMap they belong.
+Marks the item to be positioned before `key` on the OrderableChainedMap they belong.
 
 Returns itself to allow chaining.
 
 ##### .after(key)
 
-Marks the entry to be positioned after `key` on the OrderableChainedMap they belong.
+Marks the item to be positioned after `key` on the OrderableChainedMap they belong.
 
 Returns itself to allow chaining.
 
 
-#### Example
+#### Example usage of OrderableChainedMap
 
 ```js
 class Jest extends ChainedMap {
     constructor(parent) {
         super(parent);
 
-        this.extend([
+        this.shorthands([
             'rootDir',
             'runner',
-            // ...
         ]);
 
-        this.setupFiles = new OrderableChainedMap(this);
-        this.projects = new OrderableChainedMap(this);
+        this.set('setupFiles', new OrderableChainedMap(this, { asArray: true }));
+        this.set('projectFiles', new OrderableChainedMap(this, { asArray: true }));
     }
 
     project(name) {
@@ -279,10 +360,8 @@ class Jest extends ChainedMap {
 }
 
 // Then use it like so:
-const jestConfig = new Jest();
-
-jestConfig
-    // Using `move` to re-order entries
+const jestConfig = (new Jest())
+    // Using `move` to re-order items
     .setupFiles
         .set('setup-foo', '/path/to/setup/foo.js')
         .set('setup-bar', '/path/to/setup/bar.js')
@@ -291,7 +370,7 @@ jestConfig
         .move('setup-baz', ({ after }) => after('setup-foo'))
         .end()
     // Using `before` and `after` which where added automatically by
-    // OrderableChainedMap to entries added via `set`
+    // OrderableChainedMap to items added via `set`
     .project('examples')
         .set('displayName', 'lint')
         .set('runner', 'jest-runner-eslint')
@@ -299,7 +378,27 @@ jestConfig
         .end()
     .project('test')
         .set('displayName', 'test')
-        .before('examples');
+        .before('examples')
+        .end()
+    .toConfig();
+
+// {
+//     setupFiles: [
+//         '/path/to/setup/bar.js',
+//         '/path/to/setup/foo.js',
+//         '/path/to/setup/baz.js',
+//     ],
+//     projects: [
+//         {
+//             displayName: 'test',
+//         },
+//         {
+//             displayName: 'lint',
+//             runner: 'jest-runner-eslint',
+//             testMatch: ['<rootDir>/**/*.js'],
+//         },
+//     ],
+// }
 ```
 
 
@@ -311,6 +410,7 @@ A ChainedSet operates similarly to a JavaScript Set, with some conveniences for 
   <summary><b>Differences from webpack-chain:</b></summary>
   <ul>
     <li>Added <code>.forEach()</code> just like the native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach">Set</a></li>
+    <li>Added <code>.toConfig()</code> which returns an array representation of the config, calling <code>.toConfig()</code> recursively for each stored value</li>
   </ul>
 </details>
 
@@ -341,7 +441,7 @@ Returns `true` if it exists, `false` otherwise.
 
 #### .clear()
 
-Remove all entries from the Set.
+Remove all items from the Set.
 
 Returns itself to allow chaining.
 
@@ -359,34 +459,44 @@ Provide an array whose items will be added to the Set.
 
 Returns itself to allow chaining.
 
+#### .toConfig()
 
-#### Example
+Return the array representation of the config.   
+Calls `.toConfig()` recursively for each item that is a chainable.
+
+
+#### Example usage of ChainedSet
 
 ```js
 class Jest extends ChainedMap {
     constructor(parent) {
         super(parent);
 
-        this.extend([
+        this.shorthands([
             'rootDir',
             'runner',
             // ...
         ]);
 
-        this.moduleFileExtensions = new ChainedSet(this);
+        this.set('moduleFileExtensions', new ChainedSet(this));
     }
 }
 
 // Then use it like so:
-const jestConfig = new Jest();
-
-jestConfig
+const jestConfig = (new Jest())
+    .rootDir('my-project')
+    .runner('jest-runner-mocha')
     .moduleFileExtensions
         .add('ts')
         .add('tsx')
         .end()
-    .rootDir('my-project')
-    .runner('jest-runner-mocha');
+    .toConfig();
+
+// {
+//     rootDir: 'my-project',
+//     runner: 'jest-runner-mocha',
+//     moduleFileExtensions: ['ts', 'tsx'],
+// }
 ```
 
 

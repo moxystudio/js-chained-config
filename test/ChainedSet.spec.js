@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChainedSet } = require('..');
+const { ChainedSet, ChainedMap } = require('..');
 
 it('should create a chainable object', () => {
     const parent = { foo: 'bar' };
@@ -30,6 +30,7 @@ describe('.add', () => {
 
         set.add('foo');
         set.add('foo');
+
         expect(set.values()).toEqual(['foo']);
     });
 
@@ -55,6 +56,7 @@ describe('.prepend', () => {
 
         set.add('foo');
         set.prepend('foo');
+
         expect(set.values()).toEqual(['foo']);
     });
 
@@ -88,7 +90,7 @@ describe('.clear', () => {
 });
 
 describe('.delete', () => {
-    it('should delete an entry', () => {
+    it('should delete an item', () => {
         const set = new ChainedSet();
 
         set.add('foo');
@@ -108,7 +110,7 @@ describe('.delete', () => {
 });
 
 describe('.has', () => {
-    it('should return true if the entry exists', () => {
+    it('should return true if the item exists', () => {
         const set = new ChainedSet();
 
         set.add('foo');
@@ -119,7 +121,7 @@ describe('.has', () => {
         expect(set.has('baz')).toBe(false);
     });
 
-    it('should return false if the entry exists', () => {
+    it('should return false if the item exists', () => {
         const set = new ChainedSet();
 
         expect(set.has('foo')).toBe(false);
@@ -127,7 +129,7 @@ describe('.has', () => {
 });
 
 describe('.values', () => {
-    it('should return the entry values by insertion order', () => {
+    it('should return the items\' values by insertion order', () => {
         const set = new ChainedSet();
 
         set.add('z');
@@ -139,7 +141,7 @@ describe('.values', () => {
 });
 
 describe('.forEach', () => {
-    it('should call fn for each value', () => {
+    it('should call `fn` for each value', () => {
         const set = new ChainedSet();
 
         set.add('a');
@@ -158,7 +160,7 @@ describe('.forEach', () => {
         ]);
     });
 
-    it('should call fn with the correct `thisArg`', () => {
+    it('should call `fn` with the correct `thisArg`', () => {
         const set = new ChainedSet();
 
         set.add('a');
@@ -206,5 +208,26 @@ describe('.merge', () => {
         const ret = set.merge(['foo']);
 
         expect(set).toBe(ret);
+    });
+});
+
+describe('.toConfig', () => {
+    it('should return an array representation of the config', () => {
+        const set = new ChainedSet();
+        const childMap = new ChainedMap(set);
+        const childSet = new ChainedSet(set);
+
+        childMap.set('foo', 'bar');
+        childSet.add('foz');
+
+        set.add(childMap);
+        set.add(childSet);
+        set.add('c');
+
+        expect(set.toConfig()).toEqual([
+            { foo: 'bar' },
+            ['foz'],
+            'c',
+        ]);
     });
 });
