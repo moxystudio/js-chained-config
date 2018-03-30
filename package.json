@@ -53,6 +53,8 @@
     "standard-version": "^4.2.0"
   },
   "dependencies": {
-    "deepmerge": "^2.1.0"
+    "class-is": "^1.0.0",
+    "deepmerge": "^2.1.0",
+    "lodash.wrap": "^4.1.1"
   }
 }

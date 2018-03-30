@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChainedMap } = require('..');
+const { ChainedMap, ChainedSet } = require('..');
 
 it('should create a chainable object', () => {
     const parent = { foo: 'bar' };
@@ -20,7 +20,23 @@ describe('.set', () => {
         const map = new ChainedMap();
 
         map.set('foo', 'bar');
+
         expect(map.get('foo')).toBe('bar');
+    });
+
+    it('should add a getter/setter if value is a chainable', () => {
+        const map = new ChainedMap();
+        const childMap = new ChainedMap();
+        const otherChildMap = new ChainedMap();
+
+        map.set('foo', childMap);
+
+        expect(map.get('foo')).toBe(childMap);
+        expect(map.foo).toBe(childMap);
+
+        map.foo = otherChildMap;
+
+        expect(map.foo).toBe(otherChildMap);
     });
 
     it('should return itself', () => {
@@ -36,6 +52,7 @@ describe('.get', () => {
         const map = new ChainedMap();
 
         map.set('foo', 'bar');
+
         expect(map.get('foo')).toBe('bar');
     });
 });
@@ -62,7 +79,7 @@ describe('.clear', () => {
 });
 
 describe('.delete', () => {
-    it('should delete an entry', () => {
+    it('should delete an item', () => {
         const map = new ChainedMap();
 
         map.set('foo', 'bar');
@@ -82,7 +99,7 @@ describe('.delete', () => {
 });
 
 describe('.tap', () => {
-    it('should call fn with the entry value and use the return value as the new value', () => {
+    it('should call `fn` with the item value and use the return value as the new value', () => {
         const map = new ChainedMap();
         const fn = jest.fn(() => 'baz');
 
@@ -103,7 +120,7 @@ describe('.tap', () => {
 });
 
 describe('.has', () => {
-    it('should return true if the entry exists', () => {
+    it('should return true if the item exists', () => {
         const map = new ChainedMap();
 
         map.set('foo', 'bar');
@@ -115,7 +132,7 @@ describe('.has', () => {
         expect(map.has('baz')).toBe(true);
     });
 
-    it('should return false if the entry exists', () => {
+    it('should return false if the item exists', () => {
         const map = new ChainedMap();
 
         expect(map.has('foo')).toBe(false);
@@ -123,7 +140,7 @@ describe('.has', () => {
 });
 
 describe('.values', () => {
-    it('should return the entry values by insertion order', () => {
+    it('should return the items\' values', () => {
         const map = new ChainedMap();
 
         map.set('z', 1);
@@ -135,7 +152,7 @@ describe('.values', () => {
 });
 
 describe('.keys', () => {
-    it('should return the entry keys by insertion order', () => {
+    it('should return the item\'s keys', () => {
         const map = new ChainedMap();
 
         map.set('z', 1);
@@ -147,28 +164,23 @@ describe('.keys', () => {
 });
 
 describe('.entries', () => {
-    it('should return an object with the correct keys and values', () => {
+    it('should return an array of key and value pairs', () => {
         const map = new ChainedMap();
 
         map.set('z', 1);
         map.set('a', 2);
         map.set('c', 3);
 
-        const entries = map.entries();
-
-        expect(entries).toEqual({
-            z: 1,
-            a: 2,
-            c: 3,
-        });
-
-        expect(Object.keys(entries)).toEqual(['z', 'a', 'c']);
-        expect(Object.values(entries)).toEqual([1, 2, 3]);
+        expect(map.entries()).toEqual([
+            ['z', 1],
+            ['a', 2],
+            ['c', 3],
+        ]);
     });
 });
 
 describe('.forEach', () => {
-    it('should call fn for each entry', () => {
+    it('should call `fn` for each item', () => {
         const map = new ChainedMap();
 
         map.set('a', 1);
@@ -187,7 +199,7 @@ describe('.forEach', () => {
         ]);
     });
 
-    it('should call fn with the correct `thisArg`', () => {
+    it('should call `fn` with the correct `thisArg`', () => {
         const map = new ChainedMap();
 
         map.set('a', 1);
@@ -220,12 +232,12 @@ describe('.merge', () => {
             d: 4,
         });
 
-        expect(map.entries()).toEqual({
-            a: 1,
-            b: 2,
-            c: 3,
-            d: 4,
-        });
+        expect(map.entries()).toEqual([
+            ['a', 1],
+            ['b', 2],
+            ['c', 3],
+            ['d', 4],
+        ]);
     });
 
     it('should merge and override existing values', () => {
@@ -238,10 +250,10 @@ describe('.merge', () => {
             b: 4,
         });
 
-        expect(map.entries()).toEqual({
-            a: 3,
-            b: 4,
-        });
+        expect(map.entries()).toEqual([
+            ['a', 3],
+            ['b', 4],
+        ]);
     });
 
     it('should merge and keep the order correct', () => {
@@ -266,10 +278,10 @@ describe('.merge', () => {
             a: { foz: 'baz' },
         });
 
-        expect(map.entries()).toEqual({
-            a: { foo: 'bar', foz: 'baz' },
-            b: 2,
-        });
+        expect(map.entries()).toEqual([
+            ['a', { foo: 'bar', foz: 'baz' }],
+            ['b', 2],
+        ]);
     });
 
     it('should omit keys specified in `omit`', () => {
@@ -293,11 +305,11 @@ describe('.merge', () => {
     });
 });
 
-describe('.extend', () => {
-    it('should add methods for the specified shorthands', () => {
+describe('.shorthands', () => {
+    it('should add methods for the specified keys', () => {
         const map = new ChainedMap();
 
-        map.extend(['foo']);
+        map.shorthands(['foo']);
 
         expect(typeof map.foo).toBe('function');
 
@@ -307,8 +319,52 @@ describe('.extend', () => {
 
     it('should return itself', () => {
         const map = new ChainedMap();
-        const ret = map.extend(['foo']);
+        const ret = map.shorthands(['foo']);
 
         expect(map).toBe(ret);
+    });
+});
+
+describe('.toConfig', () => {
+    it('should return an object representation of the config', () => {
+        const map = new ChainedMap();
+        const childMap = new ChainedMap(map);
+        const childSet = new ChainedSet(map);
+
+        childMap.set('foo', 'bar');
+        childSet.add('foz');
+
+        map.set('z', childMap);
+        map.set('a', childSet);
+        map.set('c', 3);
+
+        expect(map.toConfig()).toEqual({
+            z: { foo: 'bar' },
+            a: ['foz'],
+            c: 3,
+        });
+    });
+
+    it('should be sorted by insertion order', () => {
+        const map = new ChainedMap();
+        const childMap = new ChainedMap(map);
+        const childSet = new ChainedSet(map);
+
+        childMap.set('foo', 'bar');
+        childSet.add('foz');
+
+        map.set('z', childMap);
+        map.set('a', childSet);
+        map.set('c', 3);
+
+        expect(Object.keys(map.toConfig())).toEqual(['z', 'a', 'c']);
+    });
+
+    it('should convert to array if `options.asArray` is enabled', () => {
+        const map = new ChainedMap(undefined, { asArray: true });
+
+        map.set('foo', 'bar');
+
+        expect(map.toConfig()).toEqual(['bar']);
     });
 });

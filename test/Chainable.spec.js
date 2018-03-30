@@ -70,3 +70,26 @@ describe('.when', () => {
         expect(chain).toBe(ret);
     });
 });
+
+describe('.toConfig', () => {
+    it('should throw "not implemented"', () => {
+        const chain = new Chainable();
+
+        expect(() => chain.toConfig()).toThrow('Not implemented');
+    });
+});
+
+describe('#isChainable', () => {
+    it('should return true for chainables', () => {
+        expect(Chainable.isChainable(new Chainable())).toBe(true);
+    });
+
+    it('should return false for non-chainables', () => {
+        expect(Chainable.isChainable({})).toBe(false);
+    });
+
+    it('should return false for undefined/null', () => {
+        expect(Chainable.isChainable(undefined)).toBe(false);
+        expect(Chainable.isChainable(null)).toBe(false);
+    });
+});
