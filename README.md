@@ -63,7 +63,7 @@ const myConfig = new MyConfig();
 This is the base class that others inherit from, it's not meant to be used directly.
 
 <details>
-  <summary><b>Differences from webpack-chain:</b></summary>
+  <summary><b>Open to see the differences relative to <code>webpack-chain</code></b></summary>
   <ul>
     <li>Moved <code>.when(condition, whenTruthy, whenFalsy)</code> from ChainedMap and ChainedSet to Chainable to avoid having them replicated</li>
     <li>Added <code>#isChainable</code> static method to test if a value is an instance of Chainable</li>
@@ -107,7 +107,7 @@ Returns true if it is, false otherwise.
 A ChainedMap operates similarly to a JavaScript Map, with some conveniences for chaining and generating configs. It extends [Chainable](#chainable) which means that all its methods are also available.
 
 <details>
-  <summary><b>Differences from webpack-chain:</b></summary>
+  <summary><b>Open to see the differences relative to <code>webpack-chain</code></b></summary>
   <ul>
     <li>Removed <code>order()</code> because it's an internal method, reducing the number of conflicts in case you create a class that inherits from <code>ChainedMap</code></li>
     <li>Removed <code>.clean(obj)</code> because it was used as a helper (it didn't use <code>this.store</code> whatsoever)</li>
@@ -118,7 +118,7 @@ A ChainedMap operates similarly to a JavaScript Map, with some conveniences for 
     <li>Added <code>.tap(key, fn)</code></li>
     <li>Added <code>.keys()</code> just like the native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/keys">Map</a></li>
     <li>Added <code>.forEach()</code> just like the native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach">Map</a></li>
-    <li>Added <code>.toConfig()</code> which returns an object representation of the config, calling <code>.toConfig()</code> recursively for each stored value</li>
+    <li>Added <code>.toConfig()</code> which returns an object representation of the config, calling <code>.toConfig()</code> recursively for each item</li>
   </ul>
 
   Some of the changes detailed above are *breaking* but they will mostly affect developers implementing the configs and not the consumers.
@@ -129,7 +129,7 @@ A ChainedMap operates similarly to a JavaScript Map, with some conveniences for 
 
 At the moment, ChainedMap accepts a single option named `asArray`.
 
-A Set is very limited in its capacities. With `asArray`, we can leverage ChainedMap features while keeping the return type of `toConfig` as an array. In this model, the keys on the backing map act as labels that identify items, making it easier for consumers to perform manipulations. Moreover, when using OrderableChainedMap, consumers may even change the items' order.
+A Set (and ChainedSet) is very limited in its capacities. With `asArray`, we can leverage ChainedMap features while keeping the return type of `toConfig` as an array. In this model, the keys on the backing map act as labels that identify items, making it easier for consumers to perform manipulations. Moreover, when using OrderableChainedMap, consumers may even change the items' order.
 
 #### .get(key)
 
@@ -301,7 +301,7 @@ OrderableChainedMap extends [Chainable](#chained-map) and allows to re-order key
 Consequently, `keys()`, `values()`, `entries()`, `.forEach()` and `toConfig()` methods of OrderableChainedMap will have into consideration any changes to the items order.
 
 <details>
-  <summary><b>Differences from webpack-chain:</b></summary>
+  <summary><b>Open to see the differences relative to <code>webpack-chain</code></b></summary>
   <ul>
     <li><code>webpack-chain</code> has Orderable which is a function that receives a Chainable and adds the <code>before</code> and <code>after</code> methods. OrderableChainedMap is more flexible since it allows ordering items whose values are primitives</li>
     <li>Removed weird treatment on <code>.merge(obj, [omit])</code> of <code>after</code> and <code>before</code> keys in <code>obj</code></li>
@@ -407,10 +407,10 @@ const jestConfig = (new Jest())
 A ChainedSet operates similarly to a JavaScript Set, with some conveniences for chaining and generating configs. It extends [Chainable](#chainable) which means that all its methods are also available.
 
 <details>
-  <summary><b>Differences from webpack-chain:</b></summary>
+  <summary><b>Open to see the differences relative to <code>webpack-chain</code></b></summary>
   <ul>
     <li>Added <code>.forEach()</code> just like the native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach">Set</a></li>
-    <li>Added <code>.toConfig()</code> which returns an array representation of the config, calling <code>.toConfig()</code> recursively for each stored value</li>
+    <li>Added <code>.toConfig()</code> which returns an array representation of the config, calling <code>.toConfig()</code> recursively for each stored item</li>
   </ul>
 </details>
 
