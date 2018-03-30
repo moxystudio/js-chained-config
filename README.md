@@ -298,7 +298,7 @@ const jestConfig = (new Jest())
 
 OrderableChainedMap extends [Chainable](#chained-map) and allows to re-order keys via the `move(key, specifier)` method. It also adds `before(key)` and `after(key)` methods on Chainables added via `set`. This allows an item to declare that it comes before or after another by calling the aforementioned methods on itself.
 
-Consequently, `keys()`, `values()`, `entries()`, `.forEach()`, `toObject()` and `toConfig()` methods of OrderableChainedMap will have into consideration any changes to the items order.
+Consequently, `keys()`, `values()`, `entries()`, `.forEach()` and `toConfig()` methods of OrderableChainedMap will have into consideration any changes to the items order.
 
 <details>
   <summary><b>Differences from webpack-chain:</b></summary>
