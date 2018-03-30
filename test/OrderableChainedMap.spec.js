@@ -50,8 +50,8 @@ describe('.clear', () => {
     });
 });
 
-describe('.order', () => {
-    it('should mark the map to be added before another', () => {
+describe('.move', () => {
+    it('should mark an item to be added before another', () => {
         const map = new OrderableChainedMap();
 
         map.move('foo', ({ before }) => before('bar'));
@@ -59,7 +59,15 @@ describe('.order', () => {
         expect(map.orderStore.get('foo')).toEqual({ relativeKey: 'bar', position: 'before' });
     });
 
-    it('should mark the map to be added before another (child)', () => {
+    it('should mark an item to be added after another', () => {
+        const map = new OrderableChainedMap();
+
+        map.move('foo', ({ after }) => after('bar'));
+
+        expect(map.orderStore.get('foo')).toEqual({ relativeKey: 'bar', position: 'after' });
+    });
+
+    it('should mark an item to be added before another (child)', () => {
         const map = new OrderableChainedMap();
         const childMap = new OrderableChainedMap();
 
@@ -69,15 +77,7 @@ describe('.order', () => {
         expect(map.orderStore.get('foo')).toEqual({ relativeKey: 'bar', position: 'before' });
     });
 
-    it('should mark the map to be added after another', () => {
-        const map = new OrderableChainedMap();
-
-        map.move('foo', ({ after }) => after('bar'));
-
-        expect(map.orderStore.get('foo')).toEqual({ relativeKey: 'bar', position: 'after' });
-    });
-
-    it('should mark the map to be added after another (child)', () => {
+    it('should mark an item to be added after another (child)', () => {
         const map = new OrderableChainedMap();
         const childMap = new OrderableChainedMap();
 
