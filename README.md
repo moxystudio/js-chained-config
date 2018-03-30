@@ -129,7 +129,7 @@ A ChainedMap operates similarly to a JavaScript Map, with some conveniences for 
 
 At the moment, ChainedMap accepts a single option named `asArray`.
 
-A Set is very limited in its capacities. With `asArray`, we can leverage ChainedMap features while keeping the return type of `toConfig` as an array. In this model, the keys on the backing map act as labels that identify items, becoming easier for consumers to manipulate items. Moreover, when using OrderableChainedMap, consumers may even change the items' order.
+A Set is very limited in its capacities. With `asArray`, we can leverage ChainedMap features while keeping the return type of `toConfig` as an array. In this model, the keys on the backing map act as labels that identify items, making it easier for consumers to perform manipulations. Moreover, when using OrderableChainedMap, consumers may even change the items' order.
 
 #### .get(key)
 
