@@ -147,7 +147,7 @@ class MyConfig extends ChainedMap {
         super(parent);
 
         this.set('foo', new ChainedMap(this));
-    });
+    }
 }
 
 const myConfig = new MyConfig();
