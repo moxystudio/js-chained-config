@@ -113,7 +113,6 @@ A ChainedMap operates similarly to a JavaScript Map, with some conveniences for 
     <li>Removed <code>.clean(obj)</code> because it was used as a helper (it didn't use <code>this.store</code> whatsoever)</li>
     <li>Renamed <code>.extend(shorthands)</code> to <code>.shorthands(keys)</code></li>
     <li>Changed <code>.entries(obj)</code> to return an array of key and value pairs just like the native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/keys">Map</a>
-    <li>Added <code>.tap(key, fn)</code></li>
     <li>Changed <code>.set(key, value)</code> to automatically create a getter & setter if <code>value</code> is a Chainable</li>
     <li>Added <code>.tap(key, fn)</code></li>
     <li>Added <code>.keys()</code> just like the native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/keys">Map</a></li>
