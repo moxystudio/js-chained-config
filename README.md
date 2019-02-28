@@ -1,6 +1,6 @@
 # chained-config
 
-[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status][codecov-image]][codecov-url] [![Dependency status][david-dm-image]][david-dm-url] [![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url] [![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
+[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status][codecov-image]][codecov-url] [![Dependency status][david-dm-image]][david-dm-url] [![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url] 
 
 [npm-url]:https://npmjs.org/package/chained-config
 [downloads-image]:http://img.shields.io/npm/dm/chained-config.svg
@@ -13,8 +13,6 @@
 [david-dm-image]:https://img.shields.io/david/moxystudio/js-chained-config.svg
 [david-dm-dev-url]:https://david-dm.org/moxystudio/js-chained-config?type=dev
 [david-dm-dev-image]:https://img.shields.io/david/dev/moxystudio/js-chained-config.svg
-[greenkeeper-image]:https://badges.greenkeeper.io/moxystudio/js-chained-config.svg
-[greenkeeper-url]:https://greenkeeper.io/
 
 Use a chaining API to generate and simplify the modification of configs.
 
