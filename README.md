@@ -3,10 +3,10 @@
 [![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status][codecov-image]][codecov-url] [![Dependency status][david-dm-image]][david-dm-url] [![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url]
 
 [npm-url]:https://npmjs.org/package/chained-config
-[downloads-image]:http://img.shields.io/npm/dm/chained-config.svg
-[npm-image]:http://img.shields.io/npm/v/chained-config.svg
+[downloads-image]:https://img.shields.io/npm/dm/chained-config.svg
+[npm-image]:https://img.shields.io/npm/v/chained-config.svg
 [travis-url]:https://travis-ci.org/moxystudio/js-chained-config
-[travis-image]:http://img.shields.io/travis/moxystudio/js-chained-config/master.svg
+[travis-image]:https://img.shields.io/travis/moxystudio/js-chained-config/master.svg
 [codecov-url]:https://codecov.io/gh/moxystudio/js-chained-config
 [codecov-image]:https://img.shields.io/codecov/c/github/moxystudio/js-chained-config/master.svg
 [david-dm-url]:https://david-dm.org/moxystudio/js-chained-config
@@ -505,4 +505,4 @@ const jestConfig = (new Jest())
 
 ## License
 
-Released under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
+Released under the [MIT License](https://www.opensource.org/licenses/mit-license.php).
